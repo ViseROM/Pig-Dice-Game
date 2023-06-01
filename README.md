@@ -11,7 +11,7 @@ Author: Vachia Thoj
 - Utilizes mouse clicks
 
 #### resources folder
-- Contains images and map text files
+- Contains images and text files
 
 #### src folder
 - Contains the source code
