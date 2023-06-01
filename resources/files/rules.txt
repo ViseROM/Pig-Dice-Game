@@ -1,1 +1,12 @@
+A player throws two dice and scores as many points as the total shown 
+on the dice. The player may continue rolling and accumulating points 
+or end his turn.
 
+If a player rolls a 1, the player's turn is over and loses all points 
+accumulated that turn.
+
+If a player rolls two 1s, the player's turn is over and the player 
+loses all points that the player has accumulated throughout the entire 
+game.
+
+A winner is decided when a player has accumulated 100 or more points 
