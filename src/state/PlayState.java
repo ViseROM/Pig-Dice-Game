@@ -85,9 +85,9 @@ public class PlayState extends State
 		this.player2Score = String.valueOf(context.getPlayer1().getScore());
 		this.turnScore = String.valueOf(context.getTurnScore());
         
-        this.gameOver = false;
+        	this.gameOver = false;
         
-        this.nextState = null;
+        	this.nextState = null;
 	}
 	
 	/**
@@ -117,12 +117,12 @@ public class PlayState extends State
 		//Create die1
 		die1 = new DieImage(dices);
 		die1.setX(((GamePanel.WIDTH / 2) - (die1.getWidth() / 2)) - 75);
-        die1.setY((GamePanel.HEIGHT / 2) - die1.getHeight());
+        	die1.setY((GamePanel.HEIGHT / 2) - die1.getHeight());
 		
 		//Create die2
 		die2 = new DieImage(dices);
 		die2.setX(((GamePanel.WIDTH / 2) - (die1.getWidth() / 2)) + 75);
-        die2.setY((GamePanel.HEIGHT / 2) - die2.getHeight());
+        	die2.setY((GamePanel.HEIGHT / 2) - die2.getHeight());
 	}
 	
 	/**
@@ -223,10 +223,10 @@ public class PlayState extends State
 					
 			//Tell Dices to start rolling
 			die1.setRolling(true);
-		    die2.setRolling(true);
+		    	die2.setRolling(true);
 		        	
-		    die1.setY(0 - die1.getHeight());
-		    die2.setY(0 - die2.getHeight());
+		    	die1.setY(0 - die1.getHeight());
+		    	die2.setY(0 - die2.getHeight());
 					
 		}
 		else if(stopButton.isMouseClickingButton() == true) //stopButton pressed
