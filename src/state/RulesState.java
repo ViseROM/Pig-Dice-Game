@@ -1,8 +1,8 @@
 package state;
 
-import java.awt.Graphics2D;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -11,12 +11,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import entity.Button;
+import button.*;
 import helper.TextSize;
 import main.GamePanel;
 import manager.ImageManager;
+import manager.MouseManager;
 import manager.StateManager;
-import manager.TransitionManager;
 import transition.*;
 
 /**
@@ -30,21 +30,21 @@ public class RulesState extends State
 	//To manage images
 	private ImageManager imageManager;
 	
-	//To manage transitions
-	private TransitionManager transitionManager;
+	//The next state to go to
+	private StateType nextState;
 	
 	//Title of State
-	private String title;
+	private String titleText;
 	
 	//Stores rules text
 	private ArrayList<String> rules;
 	
 	//Buttons
-	private Button menuButton;
-	private Button newGameButton;
+	private ImageButton menuButton;
+	private ImageButton newGameButton;
 	
-	//The next state to go to
-	private StateType nextState;
+	//Transitions
+	private FadeToBlack fadeToBlack;
 	
 	/**
 	 * Constructor
@@ -53,40 +53,40 @@ public class RulesState extends State
 	{
 		this.imageManager = ImageManager.instance();
 		
-		this.transitionManager = new TransitionManager(GamePanel.WIDTH, GamePanel.HEIGHT);
-		this.transitionManager.setTransition(TransitionType.FADE_TO_BLACK);
-		
-		this.title = "RULES";
-		
-		//Create Buttons
-		createButtons();
-		
-		//Load rules text
-		loadRules();
-		
 		this.nextState = null;
+		
+		createTexts();
+		createButtons();
+		createTransitions();
+		loadRules();
 	}
 	
-	/**
-	 * Method that "creates" the Buttons
-	 */
+////////////////////////////////////////////// CREATE METHODS //////////////////////////////////////////////
+	
+	private void createTexts()
+	{
+		this.titleText = "RULES";
+	}
+	
 	private void createButtons()
 	{
 		//Obtain button images from imageManager
 		BufferedImage[] buttons = imageManager.getButtons();
 		
 		//Create menuButton
-		menuButton = new Button(buttons[6], buttons[7]);
-		menuButton.setX(10);
-		menuButton.setY(GamePanel.HEIGHT - (menuButton.getHeight() + 10));
+		this.menuButton = new ImageButton(buttons[6], buttons[7]);
+		this.menuButton.setX(10);
+		this.menuButton.setY(GamePanel.HEIGHT - (menuButton.getHeight() + 10));
 		
 		//Create newGameButton
-		newGameButton = new Button(buttons[0], buttons[1]);
-		newGameButton.setX(GamePanel.WIDTH - (newGameButton.getWidth() + 10));
-		newGameButton.setY(GamePanel.HEIGHT - (newGameButton.getHeight() + 10));
-		
-		buttons = null;
-		
+		this.newGameButton = new ImageButton(buttons[0], buttons[1]);
+		this.newGameButton.setX(GamePanel.WIDTH - (newGameButton.getWidth() + 10));
+		this.newGameButton.setY(GamePanel.HEIGHT - (newGameButton.getHeight() + 10));
+	}
+	
+	private void createTransitions()
+	{
+		this.fadeToBlack = new FadeToBlack(GamePanel.WIDTH, GamePanel.HEIGHT);
 	}
 	
 	/**
@@ -121,59 +121,66 @@ public class RulesState extends State
 		}
 	}
 	
+////////////////////////////////////////////// UPDATE METHODS //////////////////////////////////////////////
+	
+	/**
+	 * Method that updates the Transitions
+	 */
+	private void updateTransitions()
+	{
+		fadeToBlack.update();
+	}
+	
+	/**
+	 * Method that checks if a change of state is necessary
+	 */
+	private void changeState()
+	{
+		if(fadeToBlack.isDone() && nextState != null)
+		{
+			MouseManager.instance().clearPressedPoint();
+			MouseManager.instance().clearReleasedPoint();
+		
+			//Go to the next State
+			StateManager.instance().changeState(nextState);
+		}
+	}
+	
 	/**
 	 * Method that updates the Buttons
 	 */
 	private void updateButtons()
-	{
-		//Update Buttons
+	{	
 		menuButton.update();
 		newGameButton.update();
+		
+		performButtonAction();
 	}
 	
 	/**
 	 * Method that performs an action if a button has been clicked
 	 */
-	private void buttonActions()
+	private void performButtonAction()
 	{
 		if(menuButton.isMouseClickingButton() == true)
 		{
-			//Set next state to MenuState
-			nextState = StateType.MENU;
-			
 			menuButton.setMouseClickingButton(false);
 			
-			//Start transition
-			transitionManager.startTransition();
+			//Run the fadeToBlack transition
+			fadeToBlack.setRunning(true);
 			
-			//Disable buttons
-			menuButton.setDisabled(true);
-			newGameButton.setDisabled(true);
+			//Indicate that the next State to go to is MainState
+			nextState = StateType.MAIN;
 		}
 		else if(newGameButton.isMouseClickingButton() == true)
 		{
-			//Set next state to PlayState
-			nextState = StateType.PLAY;
-			
 			newGameButton.setMouseClickingButton(false);
 			
-			//Start transition
-			transitionManager.startTransition();
+			//Run the fadeToBlack transition
+			fadeToBlack.setRunning(true);
 			
-			//Disable buttons
-			menuButton.setDisabled(true);
-			newGameButton.setDisabled(true);
-		}
-	}
-	
-	/**
-	 * Method that changes the state
-	 */
-	private void changeState()
-	{
-		if(nextState != null)
-		{
-			StateManager.instance().changeState(nextState);
+			//Indicate that the next State to go to is PlayState
+			nextState = StateType.PLAY;
 		}
 	}
 	
@@ -182,30 +189,24 @@ public class RulesState extends State
 	 */
 	public void update()
 	{
-		//If transition is finished
-		if(transitionManager.isDone())
+		updateTransitions();
+		
+		if(fadeToBlack.isRunning())
 		{
-			//Change state
-			changeState();
-		}
-				
-		if(transitionManager.isRunning())
-		{
-			//Update Transition
-			transitionManager.update();
 			return;
 		}
 		
-		//Update Buttons
-		updateButtons();
+		//Check if a change of State is necessary
+		changeState();
 		
-		//Perform an action if a button has been clicked
-		buttonActions();
+		updateButtons();
 	}
+	
+////////////////////////////////////////////// DRAW METHODS //////////////////////////////////////////////
 	
 	/**
 	 * Method that draws the background
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawBackground(Graphics2D g)
 	{
@@ -215,21 +216,21 @@ public class RulesState extends State
 	}
 	
 	/**
-	 * Method that draws the title
-	 * @param g The Graphics2D object to be drawn on
+	 * Method that draws the titleText
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
-	private void drawTitle(Graphics2D g)
+	private void drawTitleText(Graphics2D g)
 	{
 		//Draw Title
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Courier New", Font.BOLD, 64));
-		int titleWidth = TextSize.getTextWidth(title, g);
-		g.drawString(title, (GamePanel.WIDTH / 2) - (titleWidth / 2), 100);
+		int titleWidth = TextSize.getTextWidth(titleText, g);
+		g.drawString(titleText, (GamePanel.WIDTH / 2) - (titleWidth / 2), 100);
 	}
 	
 	/**
 	 * Method that draws the rules
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawRules(Graphics2D g)
 	{
@@ -243,8 +244,8 @@ public class RulesState extends State
 	}
 	
 	/**
-	 * Method that draws the Buttonos
-	 * @param g The graphics2D object to be drawn on
+	 * Method that draws the Buttons
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawButtons(Graphics2D g)
 	{
@@ -254,34 +255,24 @@ public class RulesState extends State
 	}
 	
 	/**
+	 * Method that draws the Transitions
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
+	 */
+	private void drawTransitions(Graphics2D g)
+	{
+		fadeToBlack.draw(g);
+	}
+	
+	/**
 	 * Method that draws everything within the RulesState
-	 * 
-	 * @param g The Graphics2D object that is will drawn to
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	public void draw(Graphics2D g)
 	{
-		//Draw Background
 		drawBackground(g);
-		
-		//Draw Title
-		drawTitle(g);
-		
-		//Draw Rules text
+		drawTitleText(g);
 		drawRules(g);
-		
-		//Draw Buttons
 		drawButtons(g);
-		
-		if(transitionManager.isDone())
-        {
-        	g.setColor(Color.BLACK);
-        	g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-        }
-        
-        //If transition is running, draw Transition
-      	if(transitionManager.isRunning() == true)
-      	{
-      		transitionManager.draw(g);
-      	}
+		drawTransitions(g);
 	}
 }

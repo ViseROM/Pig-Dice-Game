@@ -1,18 +1,19 @@
 package state;
-import java.awt.Graphics2D;
+
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import backend.Context;
-import entity.Button;
-import entity.DieImage;
+import button.*;
+import context.Context;
+import entity.DieObject;
 import helper.TextSize;
 import main.GamePanel;
 import manager.ImageManager;
+import manager.MouseManager;
 import manager.StateManager;
 import manager.OptionsManager;
-import manager.TransitionManager;
 import transition.*;
 
 /**
@@ -24,79 +25,72 @@ import transition.*;
  */
 public class PlayState extends State
 {
-	//"Middleman" to communicate between frontend and backend
-	private Context context;
-	
 	//To manage images
 	private ImageManager imageManager;
 	
 	//To manage options
 	private OptionsManager optionsManager;
 	
-	//To manage transitions
-	private TransitionManager transitionManager;
+	//The next state to go to
+	private StateType nextState;
+	
+	//"Middleman" to communicate between frontend and backend
+	private Context context;
 	
 	//Die images
-	private DieImage die1;
-	private DieImage die2;
+	private DieObject die1;
+	private DieObject die2;
 	
 	//Buttons
-	private Button menuButton;
-	private Button newGameButton;
-	private Button rollButton;
-	private Button stopButton;
+	private ImageButton menuButton;
+	private ImageButton newGameButton;
+	private ImageButton rollButton;
+	private ImageButton stopButton;
 	
-	//String to be displayed
+	//Strings to be displayed
 	private String player1;
 	private String player2;
 	private String player1Score;
 	private String player2Score;
-	private String turnScore;
 	
 	//Flag to indicate if game is over
 	private boolean gameOver;
 	
-	//The next state to go to
-	private StateType nextState;
+	//Transitions
+	private VerticalSplit verticalSplit;
 	
 	/**
 	 * Constructor
 	 */
 	public PlayState()
 	{
-		this.context = Context.instance();
-		this.context.newGame();
-		
 		this.imageManager = ImageManager.instance();
 		this.optionsManager = OptionsManager.instance();
 		
-		this.transitionManager = new TransitionManager(GamePanel.WIDTH, GamePanel.HEIGHT);
-		this.transitionManager.setTransition(TransitionType.VERTICAL_SPLIT);
+		this.nextState = null;
 		
-		//Create DieImages
-		createDieImages();
-		
-		//Create Buttons
+		createContext();
+		createTexts();
+		createDieObjects();
 		createButtons();
+		createTransitions();
 		
-		this.player1 = context.getPlayer1().getName();
-		this.player2 = context.getPlayer2().getName();
-		this.player1Score = String.valueOf(context.getPlayer1().getScore());
-		this.player2Score = String.valueOf(context.getPlayer1().getScore());
-		this.turnScore = String.valueOf(context.getTurnScore());
-        
-        	this.gameOver = false;
-        
-        	this.nextState = null;
+        this.gameOver = false;
 	}
 	
-	/**
-	 * Method that initializes the dices
-	 */
-	private void createDieImages()
+////////////////////////////////////////////// CREATE METHODS //////////////////////////////////////////////
+	
+	private void createContext()
+	{
+		this.context = new Context();
+		this.context.newGame();
+	}
+	
+	private void createDieObjects()
 	{
 		BufferedImage[] dices;
 		Color diceColor = optionsManager.getDiceColor();
+		
 		if(diceColor == Color.WHITE)
 		{
 			dices = imageManager.getWhiteDice();
@@ -115,42 +109,59 @@ public class PlayState extends State
 		}
 		
 		//Create die1
-		die1 = new DieImage(dices);
+		die1 = new DieObject(dices);
 		die1.setX(((GamePanel.WIDTH / 2) - (die1.getWidth() / 2)) - 75);
-        	die1.setY((GamePanel.HEIGHT / 2) - die1.getHeight());
+        die1.setY((GamePanel.HEIGHT / 2) - die1.getHeight());
 		
 		//Create die2
-		die2 = new DieImage(dices);
+		die2 = new DieObject(dices);
 		die2.setX(((GamePanel.WIDTH / 2) - (die1.getWidth() / 2)) + 75);
-        	die2.setY((GamePanel.HEIGHT / 2) - die2.getHeight());
+        die2.setY((GamePanel.HEIGHT / 2) - die2.getHeight());
 	}
 	
-	/**
-	 * Method that initializes the Buttons
-	 */
+	private void createTexts()
+	{
+		this.player1 = context.getPlayer1().getName();
+		this.player2 = context.getPlayer2().getName();
+		this.player1Score = String.valueOf(context.getPlayer1().getScore());
+		this.player2Score = String.valueOf(context.getPlayer1().getScore());
+	}
+
 	private void createButtons()
 	{	
 		BufferedImage images[] = imageManager.getButtons();
 		
 		//Create menuButton
-		menuButton = new Button(images[6], images[7]);
-		menuButton.setX(0);
-		menuButton.setY(0);
+		this.menuButton = new ImageButton(images[6], images[7]);
+		this.menuButton.setX(0);
+		this.menuButton.setY(0);
 		
 		//Create newGameButton
-		newGameButton = new Button(images[0], images[1]);
-		newGameButton.setX(GamePanel.WIDTH - newGameButton.getWidth());
-		newGameButton.setY(0);
+		this.newGameButton = new ImageButton(images[0], images[1]);
+		this.newGameButton.setX(GamePanel.WIDTH - newGameButton.getWidth());
+		this.newGameButton.setY(0);
 		
 		//Create rollButton
-		rollButton = new Button(images[8], images[9]);
-		rollButton.setX((GamePanel.WIDTH / 2) - (rollButton.getWidth() / 2));
-		rollButton.setY(GamePanel.HEIGHT - (rollButton.getHeight() + 100));
+		this.rollButton = new ImageButton(images[8], images[9]);
+		this.rollButton.setX((GamePanel.WIDTH / 2) - (rollButton.getWidth() / 2));
+		this.rollButton.setY(GamePanel.HEIGHT - (rollButton.getHeight() + 100));
 		
 		//Create stopButton
-		stopButton = new Button(images[10], images[11]);
-		stopButton.setX((GamePanel.WIDTH / 2) - (stopButton.getWidth() / 2));
-		stopButton.setY(GamePanel.HEIGHT - (stopButton.getHeight() + 25));
+		this.stopButton = new ImageButton(images[10], images[11]);
+		this.stopButton.setX((GamePanel.WIDTH / 2) - (stopButton.getWidth() / 2));
+		this.stopButton.setY(GamePanel.HEIGHT - (stopButton.getHeight() + 25));
+	}
+	
+	private void createTransitions()
+	{
+		this.verticalSplit = new VerticalSplit(GamePanel.WIDTH, GamePanel.HEIGHT);
+	}
+	
+////////////////////////////////////////////// UPDATE METHODS //////////////////////////////////////////////
+	
+	private void updateTransitions()
+	{
+		verticalSplit.update();
 	}
 	
 	/**
@@ -158,8 +169,11 @@ public class PlayState extends State
 	 */
 	private void changeState()
 	{
-		if(nextState != null)
+		if(verticalSplit.isDone() && nextState != null)
 		{
+			MouseManager.instance().clearPressedPoint();
+			MouseManager.instance().clearReleasedPoint();
+			
 			StateManager.instance().changeState(nextState);
 		}
 	}
@@ -174,44 +188,35 @@ public class PlayState extends State
 		newGameButton.update();
 		rollButton.update();
 		stopButton.update();
+		
+		//Checks to see if an action needs to be performed if a Button has been clicked
+		performButtonAction();
 	}
 	
 	/**
-	 * Method that performs a button action 
+	 * Method that performs a button action it is clicked
 	 */
-	private void buttonActions()
+	private void performButtonAction()
 	{
 		if(menuButton.isMouseClickingButton() == true)
 		{
-			//Set next state to MenuState
-			nextState = StateType.MENU;
-			
 			menuButton.setMouseClickingButton(false);
 			
-			//Start transition
-			transitionManager.startTransition();
+			//Run the verticalSplit transition
+			verticalSplit.setRunning(true);
 			
-			//Disable buttons
-			menuButton.setDisabled(true);
-			newGameButton.setDisabled(true);
-			rollButton.setDisabled(true);
-			stopButton.setDisabled(true);
+			//Indicate that the next State to go to is the MainState
+			nextState = StateType.MAIN;
 		}
 		else if(newGameButton.isMouseClickingButton() == true)
 		{
-			//Set next state to PlayState
-			nextState = StateType.PLAY;
-			
 			newGameButton.setMouseClickingButton(false);
 			
-			//Start transition
-			transitionManager.startTransition();
+			//Run the verticalSplit transition
+			verticalSplit.setRunning(true);
 			
-			//Disable buttons
-			menuButton.setDisabled(true);
-			newGameButton.setDisabled(true);
-			rollButton.setDisabled(true);
-			stopButton.setDisabled(true);
+			//Indicate that the next State to go to is the PlayState
+			nextState = StateType.PLAY;
 		}
 		else if(rollButton.isMouseClickingButton() == true)
 		{
@@ -223,10 +228,10 @@ public class PlayState extends State
 					
 			//Tell Dices to start rolling
 			die1.setRolling(true);
-		    	die2.setRolling(true);
+		    die2.setRolling(true);
 		        	
-		    	die1.setY(0 - die1.getHeight());
-		    	die2.setY(0 - die2.getHeight());
+		    die1.setY(0 - die1.getHeight());
+		    die2.setY(0 - die2.getHeight());
 					
 		}
 		else if(stopButton.isMouseClickingButton() == true) //stopButton pressed
@@ -246,7 +251,6 @@ public class PlayState extends State
 				//Tell context to go to next player's turn
 				context.nextPlayer();
 			}
-					
 		}
 	}
 	
@@ -254,32 +258,22 @@ public class PlayState extends State
 	 * Method that updates the PlayState
 	 */
 	public void update()
-	{
-		//If transition is finished
-		if(transitionManager.isDone())
+	{	
+		updateTransitions();
+		
+		if(verticalSplit.isRunning())
 		{
-			//Change state
-			changeState();
-		}
-								
-		if(transitionManager.isRunning())
-		{
-			//Update Transition
-			transitionManager.update();
 			return;
 		}
 		
-		//Update Buttons
+		changeState();
+		
 		updateButtons();
-		
-		//Perform an action if a button has been clicked
-		buttonActions();
-		
 		
 		//Rolling animation
         if(die1.isRolling() == true && die2.isRolling() == true)
         {
-        	//Update die images
+        	//Update dices
         	die1.update();
         	die2.update();
         	
@@ -321,10 +315,11 @@ public class PlayState extends State
         }
 	}
 	
+////////////////////////////////////////////// DRAW METHODS //////////////////////////////////////////////
+	
 	/**
-	 * Methods that draws the Background for PlayState
-	 * 
-	 * @param g The Graphics2D object that is going to be drawn on
+	 * Methods that draws the background
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawBackground(Graphics2D g)
 	{
@@ -352,9 +347,8 @@ public class PlayState extends State
 	}
 	
 	/**
-	 * Method that draws the Button for PlayState
-	 * 
-	 * @param g The Graphics2D object that is going to be drawn on
+	 * Method that draws the Buttons
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawButtons(Graphics2D g)
 	{
@@ -365,9 +359,8 @@ public class PlayState extends State
 	}
 	
 	/**
-	 * Method that draws the dices for PlayState
-	 * 
-	 * @param g The Graphics2D object that is going to be drawn on
+	 * Method that draws the dices
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawDices(Graphics2D g)
 	{
@@ -375,6 +368,10 @@ public class PlayState extends State
         die2.draw(g);
 	}
 	
+	/**
+	 * Method that draws the Strings/texts
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
+	 */
 	private void drawStrings(Graphics2D g)
 	{
 		int textWidth;
@@ -406,7 +403,7 @@ public class PlayState extends State
 	
 	/**
 	 * Method that draws information about who won
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawWinner(Graphics2D g)
 	{
@@ -429,22 +426,23 @@ public class PlayState extends State
 	}
 	
 	/**
+	 * Method that draws the Transitions
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
+	 */
+	private void drawTransitions(Graphics2D g)
+	{
+		verticalSplit.draw(g);
+	}
+	
+	/**
 	 * Method that draws everything within the PlayState
-	 * 
-	 * @param g The Graphics2D object that is going to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	public void draw(Graphics2D g)
 	{
-		//Draw Background
 		drawBackground(g);
-        
-        //Draw Buttons
         drawButtons(g);
-        
-        //Draw Dices
         drawDices(g);
-        
-        //Draw Strings
         drawStrings(g);
         
         //Draw winner String if game is over
@@ -453,16 +451,6 @@ public class PlayState extends State
         	drawWinner(g);
         }
         
-        if(transitionManager.isDone())
-        {
-        	g.setColor(Color.BLACK);
-        	g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-        }
-        
-        //If transition is running, draw Transition
-      	if(transitionManager.isRunning() == true)
-      	{
-      		transitionManager.draw(g);
-      	}
+        drawTransitions(g);
 	}
 }

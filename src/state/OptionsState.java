@@ -1,18 +1,18 @@
 package state;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-
-import entity.Button;
-import helper.TextSize;
-import main.GamePanel;
-import manager.ImageManager;
-import manager.StateManager;
-import manager.OptionsManager;
-import manager.TransitionManager;
-import transition.*;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import button.*;
+import helper.TextSize;
+import main.GamePanel;
+import manager.ImageManager;
+import manager.MouseManager;
+import manager.StateManager;
+import manager.OptionsManager;
+import transition.*;
 
 /**
  * OptionsState class represents the Options menu to be drawn on screen
@@ -27,14 +27,13 @@ public class OptionsState extends State
 	//To manage options
 	private OptionsManager optionsManager;
 	
-	//To manage transitions
-	private TransitionManager transitionManager;
+	//The next state to go to
+	private StateType nextState;
 	
-	//Title of state
-	private String title;
-	
-	private String dieColor;
-	private String targetScore;
+	//Texts
+	private String titleText;
+	private String dieColorText;
+	private String targetScoreText;
 	
 	//Max number of colors for dice
 	private static final int NUM_COLORS = 3;
@@ -43,19 +42,19 @@ public class OptionsState extends State
 	private static final int NUM_TARGETS = 2;
 	
 	//Possible color options for dice
-	private Button[] colorOptions;
+	private ImageButton[] colorOptions;
 	private int colorIndex;
 	
 	//Possible target score options for the game
-	private Button[] targetOptions;
+	private ImageButton[] targetOptions;
 	private int targetIndex;
 	
 	//Buttons
-	private Button menuButton;
-	private Button newGameButton;
+	private ImageButton menuButton;
+	private ImageButton newGameButton;
 	
-	//The next state to go to
-	private StateType nextState;
+	//Transitions
+	private FadeToBlack fadeToBlack;
 	
 	/**
 	 * Constructor
@@ -65,13 +64,7 @@ public class OptionsState extends State
 		this.imageManager = ImageManager.instance();
 		this.optionsManager = OptionsManager.instance();
 		
-		this.transitionManager = new TransitionManager(GamePanel.WIDTH, GamePanel.HEIGHT);
-		this.transitionManager.setTransition(TransitionType.FADE_TO_BLACK);
-		
-		this.title = "OPTIONS";
-		
-		this.dieColor = "Dice Color:";
-		this.targetScore = "Target Score:";
+		this.nextState = null;
 		
 		if(optionsManager.getDiceColor() == Color.BLACK)
 		{
@@ -95,83 +88,80 @@ public class OptionsState extends State
 			targetIndex = 0;
 		}
 		
+		createTexts();
 		createOptions();
-		
-		//Create Buttons
 		createButtons();
-		
-		this.nextState = null;
+		createTransitions();
 	}
 	
-	/**
-	 * Method that creates Buttons
-	 */
+////////////////////////////////////////////// CREATE METHODS //////////////////////////////////////////////
+	
 	private void createButtons()
 	{
 		//Obtain button images
 		BufferedImage[] buttons = imageManager.getButtons();
 		
 		//menuButton
-		menuButton = new Button(buttons[6], buttons[7]);
-		menuButton.setX(10);
-		menuButton.setY(GamePanel.HEIGHT - (menuButton.getHeight() + 10));
+		this.menuButton = new ImageButton(buttons[6], buttons[7]);
+		this.menuButton.setX(10);
+		this.menuButton.setY(GamePanel.HEIGHT - (menuButton.getHeight() + 10));
 		
 		//newGameButton
-		newGameButton = new Button(buttons[0], buttons[1]);
-		newGameButton.setX(GamePanel.WIDTH - (newGameButton.getWidth() + 10));
-		newGameButton.setY(GamePanel.HEIGHT - (newGameButton.getHeight() + 10));
-		
-		buttons = null;
-		
+		this.newGameButton = new ImageButton(buttons[0], buttons[1]);
+		this.newGameButton.setX(GamePanel.WIDTH - (newGameButton.getWidth() + 10));
+		this.newGameButton.setY(GamePanel.HEIGHT - (newGameButton.getHeight() + 10));		
 	}
 	
-	/**
-	 * Method that creates options
-	 */
 	private void createOptions()
 	{
 		BufferedImage[] options = imageManager.getOptions();
 		
-		colorOptions = new Button[NUM_COLORS];
-		targetOptions = new Button[NUM_TARGETS];
+		this.colorOptions = new ImageButton[NUM_COLORS];
+		this.targetOptions = new ImageButton[NUM_TARGETS];
 		
 		//Dice color options
-		colorOptions[0] = new Button(750, 170, options[0], options[1]);
-		colorOptions[1] = new Button(750, 170, options[2], options[3]);	
-		colorOptions[2] = new Button(750, 170, options[4], options[5]);
+		this.colorOptions[0] = new ImageButton(750, 170, options[0], options[1]);
+		this.colorOptions[1] = new ImageButton(750, 170, options[2], options[3]);	
+		this.colorOptions[2] = new ImageButton(750, 170, options[4], options[5]);
 		
 		//Target score options
-		targetOptions[0] = new Button(750, 270, options[6], options[7]);
-		targetOptions[1] = new Button(750, 270, options[8], options[9]);
-		
-		options = null;
+		this.targetOptions[0] = new ImageButton(750, 270, options[6], options[7]);
+		this.targetOptions[1] = new ImageButton(750, 270, options[8], options[9]);
+	}
+	
+	private void createTexts()
+	{
+		this.titleText = "OPTIONS";
+		this.dieColorText = "Dice Color:";
+		this.targetScoreText = "Target Score:";
+	}
+	
+	private void createTransitions()
+	{
+		this.fadeToBlack = new FadeToBlack(GamePanel.WIDTH, GamePanel.HEIGHT);
+	}
+	
+////////////////////////////////////////////// UPDATE METHODS //////////////////////////////////////////////
+	
+	/**
+	 * Method that updates the Transitions
+	 */
+	private void updateTransitions()
+	{
+		fadeToBlack.update();
 	}
 	
 	/**
-	 * Method that updates the optionsManager
+	 * Method that checks if a change of state is necessary
 	 */
-	private void updateOptionsManager()
-	{
-		if(targetIndex == 0)
+	private void changeState()
+	{	
+		if(fadeToBlack.isDone() && nextState != null)
 		{
-			optionsManager.setTargetScore(100);
-		}
-		else if(targetIndex == 1)
-		{
-			optionsManager.setTargetScore(200);
-		}
-		
-		if(colorIndex == 0)
-		{
-			optionsManager.setDiceColor(Color.WHITE);
-		}
-		else if(colorIndex == 1)
-		{
-			optionsManager.setDiceColor(Color.BLACK);
-		}
-		else if(colorIndex == 2)
-		{
-			optionsManager.setDiceColor(Color.RED);
+			MouseManager.instance().clearPressedPoint();
+			MouseManager.instance().clearReleasedPoint();
+			
+			StateManager.instance().changeState(nextState);
 		}
 	}
 	
@@ -183,86 +173,44 @@ public class OptionsState extends State
 		//Update Buttons
 		menuButton.update();
 		newGameButton.update();
+		
+		//Check if an action needs to be performed
+		performButtonAction();
 	}
 	
 	/**
 	 * Method that performs an action when a Button has been clicked
 	 */
-	private void buttonActions()
+	private void performButtonAction()
 	{
 		if(menuButton.isMouseClickingButton() == true)
 		{
-			//Set next state to MenuState
-			nextState = StateType.MENU;
-			
 			menuButton.setMouseClickingButton(false);
 			
-			//Start transition
-			transitionManager.startTransition();
+			//Run the fadeToBlack Transition
+			fadeToBlack.setRunning(true);
 			
-			//Disable buttons
-			menuButton.setDisabled(true);
-			newGameButton.setDisabled(true);
-			colorOptions[colorIndex].setDisabled(true);
-			targetOptions[targetIndex].setDisabled(true);
+			//Indicate that the next State to go to is the MainState
+			nextState = StateType.MAIN;
 		}
 		else if(newGameButton.isMouseClickingButton() == true)
 		{
-			//Set next state to PlayState
-			nextState = StateType.PLAY;
-			
 			newGameButton.setMouseClickingButton(false);
 			
-			//Start transition
-			transitionManager.startTransition();
+			//Run to the fadeToBlack Transition
+			fadeToBlack.setRunning(true);
 			
-			//Disable buttons
-			menuButton.setDisabled(true);
-			newGameButton.setDisabled(true);
-			colorOptions[colorIndex].setDisabled(true);
-			targetOptions[targetIndex].setDisabled(true);
+			//Indicate that the next State to go to is the PlayState
+			nextState = StateType.PLAY;
 		}
 	}
 	
 	/**
-	 * Method that changes the state
+	 * Method that updates the color options
 	 */
-	private void changeState()
+	private void updateColorOptions()
 	{
-		if(nextState != null)
-		{
-			StateManager.instance().changeState(nextState);
-		}
-	}
-	
-	/**
-	 * Method that updates the OptionsState
-	 */
-	public void update()
-	{
-		//If transition is finished
-		if(transitionManager.isDone())
-		{
-			//Change state
-			changeState();
-		}
-						
-		if(transitionManager.isRunning())
-		{
-			//Update Transition
-			transitionManager.update();
-			return;
-		}
-		
-		//Update Buttons
-		updateButtons();
-		
-		//Perform an action if a button has been clicked
-		buttonActions();
-		
-		//Update options
 		colorOptions[colorIndex].update();
-		targetOptions[targetIndex].update();
 		
 		if(colorOptions[colorIndex].isMouseClickingButton())
 		{
@@ -273,8 +221,19 @@ public class OptionsState extends State
 			{
 				colorIndex = 0;
 			}
+			
+			return;
 		}
-		else if(targetOptions[targetIndex].isMouseClickingButton())
+	}
+	
+	/**
+	 * Method that updates the target options
+	 */
+	private void updateTargetOptions()
+	{
+		targetOptions[targetIndex].update();
+		
+		if(targetOptions[targetIndex].isMouseClickingButton())
 		{
 			targetOptions[targetIndex].setMouseClickingButton(false);
 			
@@ -283,15 +242,70 @@ public class OptionsState extends State
 			{
 				targetIndex = 0;
 			}
+			
+			return;
 		}
-		
-		//Update OptionsManager
-		updateOptionsManager();
 	}
 	
 	/**
+	 * Method that updates the optionsManager
+	 */
+	private void updateOptionsManager()
+	{
+		switch(targetIndex)
+		{
+			case 0:
+				optionsManager.setTargetScore(100);
+				break;
+			case 1:
+				optionsManager.setTargetScore(200);
+				break;
+			default:
+				break;
+		}
+		
+		switch(colorIndex)
+		{
+			case 0:
+				optionsManager.setDiceColor(Color.WHITE);
+				break;
+			case 1:
+				optionsManager.setDiceColor(Color.BLACK);
+				break;
+			case 2:
+				optionsManager.setDiceColor(Color.RED);
+				break;
+			default:
+				break;
+		}
+	}
+		
+	/**
+	 * Method that updates the OptionsState
+	 */
+	public void update()
+	{
+		updateTransitions();
+		
+		if(fadeToBlack.isRunning())
+		{
+			return;
+		}
+		
+		//Check if a change of State is necessary
+		changeState();
+		
+		updateButtons();
+		updateColorOptions();
+		updateTargetOptions();
+		updateOptionsManager();
+	}
+	
+////////////////////////////////////////////// DRAW METHODS //////////////////////////////////////////////
+	
+	/**
 	 * Method that draws the background
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawBackground(Graphics2D g)
 	{
@@ -300,34 +314,43 @@ public class OptionsState extends State
 	}
 	
 	/**
-	 * Method that draws the title
-	 * @param g The Graphics2D object to be drawn on
+	 * Method that draws the titleText
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
-	private void drawTitle(Graphics2D g)
+	private void drawTitleText(Graphics2D g)
 	{
 		//Draw Title
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Courier New", Font.BOLD, 64));
-		int titleWidth = TextSize.getTextWidth(title, g);
-		g.drawString(title, (GamePanel.WIDTH / 2) - (titleWidth / 2), 100);
+		int titleWidth = TextSize.getTextWidth(titleText, g);
+		g.drawString(titleText, (GamePanel.WIDTH / 2) - (titleWidth / 2), 100);
+	}
+	
+	/**
+	 * Method that draws the dieColorText
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
+	 */
+	private void drawDieColorText(Graphics2D g)
+	{
+		g.setColor(Color.BLACK);
+		g.setFont(new Font("Courier New", Font.BOLD, 24));
+		g.drawString(dieColorText, 400, 200);
 	}
 	
 	/**
 	 * Method that draws various Strings
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
-	private void drawString(Graphics2D g)
+	private void drawTargetScoreText(Graphics2D g)
 	{
 		g.setColor(Color.BLACK);
 		g.setFont(new Font("Courier New", Font.BOLD, 24));
-		g.drawString(dieColor, 400, 200);
-		
-		g.drawString(targetScore, 400, 300);
+		g.drawString(targetScoreText, 400, 300);
 	}
 	
 	/**
 	 * Method that draws the options
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawOptions(Graphics2D g)
 	{
@@ -338,7 +361,7 @@ public class OptionsState extends State
 	
 	/**
 	 * Method that draws the Buttons
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	private void drawButtons(Graphics2D g)
 	{
@@ -348,37 +371,26 @@ public class OptionsState extends State
 	}
 	
 	/**
+	 * Method that draws the Transitions
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
+	 */
+	private void drawTransitions(Graphics2D g)
+	{
+		fadeToBlack.draw(g);
+	}
+	
+	/**
 	 * Method that draws the OptionsState
-	 * 
-	 * @param g The Graphisc2D object to be drawn on
+	 * @param g (Graphics2D) The Graphisc2D object to be drawn on
 	 */
 	public void draw(Graphics2D g)
 	{
-		//Draw Background
 		drawBackground(g);
-		
-		//Draw Title
-		drawTitle(g);
-		
-		//Draw Strings
-		drawString(g);
-		
-		//Draw options
+		drawTitleText(g);
+		drawDieColorText(g);
+		drawTargetScoreText(g);
 		drawOptions(g);
-		
-		//Draw Buttons
 		drawButtons(g);
-		
-		if(transitionManager.isDone())
-        {
-        	g.setColor(Color.BLACK);
-        	g.fillRect(0, 0, GamePanel.WIDTH, GamePanel.HEIGHT);
-        }
-        
-        //If transition is running, draw Transition
-      	if(transitionManager.isRunning() == true)
-      	{
-      		transitionManager.draw(g);
-      	}
+		drawTransitions(g);
 	}
 }

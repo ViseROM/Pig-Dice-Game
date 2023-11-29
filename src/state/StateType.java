@@ -7,8 +7,8 @@ package state;
  */
 public enum StateType 
 {
-	MENU,
+	MAIN,
 	PLAY,
 	RULES,
-	OPTIONS
+	OPTIONS;
 }
