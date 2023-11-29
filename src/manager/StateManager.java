@@ -22,9 +22,13 @@ public class StateManager
 	 */
 	private StateManager()
 	{
-		currentState = new MenuState();
+		this.currentState = new MainState();
 	}
 	
+	/**
+	 * Method to be called to obtain StateManager object (Singleton)
+	 * @return StateManager object
+	 */
 	public static StateManager instance()
 	{
 		if(stateManager == null)
@@ -37,15 +41,14 @@ public class StateManager
 	
 	/**
 	 * Method that changes the current state
-	 * 
-	 * @param nextState the StateType to go to
+	 * @param nextState (StateType) the next State to go to
 	 */
 	public void changeState(StateType nextState)
 	{
 		switch(nextState)
 		{
-			case MENU:
-				currentState = new MenuState();
+			case MAIN:
+				currentState = new MainState();
 				break;
 			case PLAY:
 				currentState = new PlayState();
@@ -73,7 +76,7 @@ public class StateManager
 	/**
 	 * Method that draws the current state
 	 * 
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	public void draw(Graphics2D g)
 	{

@@ -25,6 +25,9 @@ public class MouseManager
 	private boolean mousePressed;
 	private boolean mouseReleased;
 	
+	/**
+	 * Constructor (private)
+	 */
 	private MouseManager()
 	{
 		this.pressedPoint = null;
@@ -35,6 +38,10 @@ public class MouseManager
 		this.mouseReleased = false;
 	}
 	
+	/**
+	 * Method to be called to obtain MouseManager object (Singleton)
+	 * @return MouseManager object
+	 */
 	public static MouseManager instance()
 	{
 		if(mouseManager == null)

@@ -1,4 +1,5 @@
 package manager;
+
 import java.awt.Color;
 
 /**
@@ -17,7 +18,6 @@ public class OptionsManager
 	//Default dice color
 	private static final Color DEFAULT_COLOR = Color.WHITE;
 	
-	
 	//Target Score
 	private int targetScore;
 	
@@ -33,6 +33,10 @@ public class OptionsManager
 		this.targetScore = DEFAULT_SCORE;
 	}
 	
+	/**
+	 * Method to be called to obtain OptionsManager object (Singleton)
+	 * @return OptionsManager object
+	 */
 	public static OptionsManager instance()
 	{
 		if(optionsManager == null)

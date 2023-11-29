@@ -53,12 +53,12 @@ public class ImageManager
 		loadDiceImages();
 		loadButtonImages();
 		loadOptionsImages();
-		
-		this.diceSheet = null;
-		this.buttonSheet = null;
-		this.optionsSheet = null;
 	}
 	
+	/**
+	 * Method to be called to obtain ImageManager object (Singleton)
+	 * @return ImageManager object
+	 */
 	public static ImageManager instance()
 	{
 		if(imageManager == null)
