@@ -16,7 +16,7 @@ public class Context
 	private Game game;
 	
 	/**
-	 * Constructor (private)
+	 * Constructor
 	 */
 	public Context()
 	{
