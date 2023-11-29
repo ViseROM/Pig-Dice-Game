@@ -9,21 +9,13 @@ import main.GamePanel;
  * @author Vachia Thoj
  *
  */
-public class DieObject 
-{
-	//x and y position of DieImage
-	private int x;
-	private int y;
-	
-	//width and height
-	private int width;
-	private int height;
-	
-	//Images of DieImage
+public class DieObject extends Entity
+{	
+	//Images of DieObject
 	private BufferedImage[] images;
 	private BufferedImage currentImage;
 	
-	//Speed of DieImage
+	//Speed of DieObject
 	private double speed;
 	
 	//Change in x and y position
@@ -61,18 +53,12 @@ public class DieObject
 	}
 	
 	//Getter methods
-	public int getX() {return x;}
-	public int getY() {return y;}
-	public int getWidth() {return width;}
-	public int getHeight() {return height;}
 	public double getDx() {return dx;}
 	public double getDy() {return dy;}
 	public BufferedImage getCurrentImage() {return currentImage;}
 	public boolean isRolling() {return rolling;}
 	
 	//Setter methods
-	public void setX(int x) {this.x = x;}
-	public void setY(int y) {this.y = y;}
 	public void setRolling(boolean b) {rolling = b;}
 	
 	public void changeCurrentImage(int index) {currentImage = images[index];}
