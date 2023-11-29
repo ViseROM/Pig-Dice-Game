@@ -45,11 +45,11 @@ public class DieObject extends Entity
 		this.height = currentImage.getHeight();
 		
 		this.speed = 15;
-        this.dx = 0;
-        this.dy = speed;
-        
-        this.numBounces = 0;
-        this.rolling = false;
+		this.dx = 0;
+		this.dy = speed;
+		
+		this.numBounces = 0;
+		this.rolling = false;
 	}
 	
 	//Getter methods
@@ -69,13 +69,13 @@ public class DieObject extends Entity
 	public void update()
 	{
 		//A bouncing animation
-        //Check if ball's next position will go beyond the floor
-        if(y + dy > ((GamePanel.HEIGHT / 2) - height))
+		//Check if ball's next position will go beyond the floor
+		if(y + dy > ((GamePanel.HEIGHT / 2) - height))
         {
-            if(numBounces < 6)
+        	if(numBounces < 6)
             {
-                //Changes ball direction when hitting the floor
-                dy = -dy * 0.75;
+            	//Changes ball direction when hitting the floor
+            	dy = -dy * 0.75;
                 ++numBounces;
                 
                 //Change image
@@ -84,7 +84,7 @@ public class DieObject extends Entity
             }
             else
             {
-                dy = speed;
+            	dy = speed;
                 y = ((GamePanel.HEIGHT / 2) - height);
                 numBounces = 0;
                 rolling = false;
@@ -92,7 +92,7 @@ public class DieObject extends Entity
         }
         else
         {
-            dy += 5;
+        	dy += 5;
         }
         
         //Set the ball's x and y position
