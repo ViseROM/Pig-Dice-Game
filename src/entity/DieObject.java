@@ -23,12 +23,12 @@ public class DieObject extends Entity
 	private double dy;
 	
 	//To count number of bounces
-    private int numBounces;
-    
-    //Flag to see if rolling animation is occurring
-    private boolean rolling;
+	private int numBounces;
 	
-    //Number of images
+	//Flag to see if rolling animation is occurring
+	private boolean rolling;
+	
+	//Number of images
 	private int size;
 	
 	/**
@@ -71,32 +71,32 @@ public class DieObject extends Entity
 		//A bouncing animation
 		//Check if ball's next position will go beyond the floor
 		if(y + dy > ((GamePanel.HEIGHT / 2) - height))
-        {
-        	if(numBounces < 6)
-            {
-            	//Changes ball direction when hitting the floor
-            	dy = -dy * 0.75;
-                ++numBounces;
-                
-                //Change image
-                int value = (int)(Math.random() * size);
-                changeCurrentImage(value);
-            }
-            else
-            {
-            	dy = speed;
-                y = ((GamePanel.HEIGHT / 2) - height);
-                numBounces = 0;
-                rolling = false;
-            }
+		{
+			if(numBounces < 6)
+			{
+				//Changes ball direction when hitting the floor
+				dy = -dy * 0.75;
+				++numBounces;
+				
+				//Change image
+				int value = (int)(Math.random() * size);
+				changeCurrentImage(value);
+			}
+			else
+			{
+				dy = speed;
+				y = ((GamePanel.HEIGHT / 2) - height);
+				numBounces = 0;
+				rolling = false;
+			}
+		}
+		else
+		{
+			dy += 5;
         }
-        else
-        {
-        	dy += 5;
-        }
-        
-        //Set the ball's x and y position
-        y += dy;
+		
+		//Set the ball's x and y position
+		y += dy;
 	}
 	
 	/**
