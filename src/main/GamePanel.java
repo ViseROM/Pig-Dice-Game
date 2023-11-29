@@ -1,9 +1,6 @@
 package main;
+
 import javax.swing.JPanel;
-
-import manager.MouseManager;
-import manager.StateManager;
-
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.*;
@@ -11,6 +8,9 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import manager.MouseManager;
+import manager.StateManager;
 
 /**
  * GamePanel class is the panel (screen) that will be drawn on
@@ -42,7 +42,9 @@ public class GamePanel extends JPanel implements Runnable
 	//Manage mouse events
 	private MouseManager mouseManager;
 	
-	//Constructor
+	/**
+	 * Constructor
+	 */
 	public GamePanel()
 	{
 		super();

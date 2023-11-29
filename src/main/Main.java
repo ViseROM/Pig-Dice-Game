@@ -1,11 +1,11 @@
 package main;
+
 import javax.swing.JFrame;
 
 /**
  * Main is the class that you run/execute in order to start the program
  *  
  * @author Vachia Thoj
- *
  */
 public class Main 
 {
@@ -23,7 +23,7 @@ public class Main
 				
 		window.pack();
 		
-		//Do not allow window to be resizable
+		//Do not allow window to be resizeable
 		window.setResizable(false);
 				
 		//Center window to computer screen
