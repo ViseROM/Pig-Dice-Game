@@ -63,29 +63,29 @@ public class GamePanel extends JPanel implements Runnable
 		if(thread == null)
 		{
 			//Add a MouseListener
-        	addMouseListener(new MouseAdapter(){
-        		public void mousePressed(MouseEvent e)
-        		{
-        			mouseManager.setPressedPoint(e.getX(), e.getY());
-        			mouseManager.setMousePressed(true);
-        			mouseManager.setMouseReleased(false);
-        		}
-        		
-        		public void mouseReleased(MouseEvent e)
-        		{
-        			mouseManager.setReleasedPoint(e.getX(), e.getY());
-        			mouseManager.setMouseReleased(true);
-        			mouseManager.setMousePressed(false);
-        		}
-        	});
-        	
-        	//Add a MouseMotionListener
-        	addMouseMotionListener(new MouseAdapter() {
-        		public void mouseMoved(MouseEvent e)
-        		{
-        			mouseManager.setCurrentPoint(e.getX(), e.getY());
-        		}
-        	});
+			addMouseListener(new MouseAdapter(){
+				public void mousePressed(MouseEvent e)
+				{
+					mouseManager.setPressedPoint(e.getX(), e.getY());
+					mouseManager.setMousePressed(true);
+					mouseManager.setMouseReleased(false);
+				}
+				
+				public void mouseReleased(MouseEvent e)
+				{
+					mouseManager.setReleasedPoint(e.getX(), e.getY());
+					mouseManager.setMouseReleased(true);
+					mouseManager.setMousePressed(false);
+				}
+			});
+			
+			//Add a MouseMotionListener
+			addMouseMotionListener(new MouseAdapter() {
+				public void mouseMoved(MouseEvent e)
+				{
+					mouseManager.setCurrentPoint(e.getX(), e.getY());
+				}
+			});
 			
 			//Create thread and start thread
 			thread = new Thread(this);
@@ -96,48 +96,48 @@ public class GamePanel extends JPanel implements Runnable
 	public void run()
 	{
 		running = true;
-        
-        image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-        g = (Graphics2D) image.getGraphics();
-        
-        //Add anti-aliasing
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-        
-        long startTime;
-        long URDTimeMillis;
-        long waitTime;
-        
-        int frameCount = 0;
-        int maxFrameCount = FPS;
-        long targetTime = 1000 / FPS;
-        
-        //Create running thread
-        while(running == true)
-        {
-            startTime = System.nanoTime();
-            
-            update();
-            draw();
-            drawToScreen();
-            
-            URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
-            waitTime = targetTime - URDTimeMillis;
-            
-            try{
-                Thread.sleep(waitTime);
-            }catch(Exception e){
-                
-            }
-            
-            //Counting frame rate
-            frameCount++;
-            
-            if(frameCount == maxFrameCount)
-            {
-                frameCount = 0;
-            } 
-        }
+		
+		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		g = (Graphics2D) image.getGraphics();
+		
+		//Add anti-aliasing
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		
+		long startTime;
+		long URDTimeMillis;
+		long waitTime;
+		
+		int frameCount = 0;
+		int maxFrameCount = FPS;
+		long targetTime = 1000 / FPS;
+		
+		//Create running thread
+		while(running == true)
+		{
+			startTime = System.nanoTime();
+			
+			update();
+			draw();
+			drawToScreen();
+			
+			URDTimeMillis = (System.nanoTime() - startTime) / 1000000;
+			waitTime = targetTime - URDTimeMillis;
+			
+			try{
+				Thread.sleep(waitTime);
+			}catch(Exception e){
+				
+			}
+			
+			//Counting frame rate
+			frameCount++;
+			
+			if(frameCount == maxFrameCount)
+			{
+				frameCount = 0;
+			} 
+		}
 	}
 	
 	/**
