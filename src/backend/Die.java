@@ -32,7 +32,6 @@ public class Die
 	
 	/**
 	 * Method that randomly generates a number between 1 and 6 (inclusive)
-	 * 
 	 * @return an integer between 1 and 6 (inclusive)
 	 */
 	public int roll()

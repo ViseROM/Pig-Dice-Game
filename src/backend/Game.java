@@ -20,6 +20,7 @@ public class Game
 	private Die die1;
 	private Die die2;
 	
+	//To evaluate rolls
 	private RollEvaluator rollEvaluator;
 	
 	//Current Player rolling
@@ -45,20 +46,33 @@ public class Game
 		this.optionsManager = OptionsManager.instance();
 		this.targetScore = optionsManager.getTargetScore();
 		
-		this.player1 = new Player("Player 1");
-		this.player2 = new Player("Player 2");
-		
-		this.rollEvaluator = new RollEvaluator();
-		
-		this.die1 = new Die();
-		this.die2 = new Die();
-		
-		this.currentPlayer = player1;
-		
+		createPlayers();
+		createRollEvaluator();
+		createDice();
+
 		this.turnScore = 0;
 		
 		this.winner = null;
 		this.gameOver = false;
+	}
+	
+	private void createPlayers()
+	{
+		this.player1 = new Player("Player 1");
+		this.player2 = new Player("Player 2");
+		
+		this.currentPlayer = player1;
+	}
+	
+	private void createRollEvaluator()
+	{
+		this.rollEvaluator = new RollEvaluator();
+	}
+	
+	private void createDice()
+	{
+		this.die1 = new Die();
+		this.die2 = new Die();
 	}
 	
 	//Getter methods
