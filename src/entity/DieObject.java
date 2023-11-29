@@ -102,7 +102,7 @@ public class DieObject extends Entity
 	/**
 	 * Method that draws the DieObject
 	 * 
-	 * @param g The Graphics2D object to be drawn on
+	 * @param g (Graphics2D) The Graphics2D object to be drawn on
 	 */
 	public void draw(Graphics2D g)
 	{
