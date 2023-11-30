@@ -469,15 +469,15 @@ public class PlayState extends State
 	{
 		drawBackground(g);
 		drawButtons(g);
-        drawDices(g);
-        drawStrings(g);
-        
-        //Draw winner String if game is over
-        if(gameOver == true)
-        {
-        	drawWinner(g);
-        }
-        
-        drawTransitions(g);
+		drawDices(g);
+		drawStrings(g);
+		
+		//Draw winner String if game is over
+		if(gameOver == true)
+		{
+			drawWinner(g);
+		}
+		
+		drawTransitions(g);
 	}
 }
