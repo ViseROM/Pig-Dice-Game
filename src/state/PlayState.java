@@ -74,8 +74,7 @@ public class PlayState extends State
 		createDieObjects();
 		createButtons();
 		createTransitions();
-		
-        this.gameOver = false;
+		this.gameOver = false;
 	}
 	
 ////////////////////////////////////////////// CREATE METHODS //////////////////////////////////////////////
@@ -376,31 +375,58 @@ public class PlayState extends State
 	{
 		int textWidth;
 		g.setColor(Color.BLACK);
-        g.setFont(new Font ("Courier New", Font.BOLD, 36));
-        
-        //Draw Player 1 Name and score
-        textWidth = TextSize.getTextWidth(player1, g);
-        g.drawString(player1, (GamePanel.WIDTH / 4) - (textWidth / 2), GamePanel.HEIGHT / 6);
-        player1Score = String.valueOf(context.getPlayer1Score());
-        textWidth = TextSize.getTextWidth(player1Score, g);
-        g.drawString(player1Score, (GamePanel.WIDTH / 4) - (textWidth / 2), ((GamePanel.HEIGHT / 6) + 50));
-        
-        //Draw Player 2 Name and score
-        textWidth = TextSize.getTextWidth(player2, g);
-        g.drawString(player2, (GamePanel.WIDTH - (GamePanel.WIDTH / 4)) - (textWidth / 2), GamePanel.HEIGHT / 6);
-        player2Score = String.valueOf(context.getPlayer2Score());
-        textWidth = TextSize.getTextWidth(player2Score, g);
-        g.drawString(player2Score, (GamePanel.WIDTH - (GamePanel.WIDTH / 4)) - (textWidth / 2), ((GamePanel.HEIGHT / 6) + 50));
-        
-        g.setFont(new Font ("Courier New", Font.BOLD, 24));
-        //Draw Turn Score
-        textWidth = TextSize.getTextWidth("Current", g);
-        g.drawString("Current", ((GamePanel.WIDTH / 2) - (textWidth/ 2)), ((GamePanel.HEIGHT / 2) + 75));
-        textWidth = TextSize.getTextWidth(String.valueOf(context.getTurnScore()), g);
-        g.drawString(String.valueOf(context.getTurnScore()), ((GamePanel.WIDTH / 2) - (textWidth / 2)), ((GamePanel.HEIGHT / 2) + 125));
-        
+		g.setFont(new Font ("Courier New", Font.BOLD, 36));
+		
+		//Draw Player 1 Name
+		textWidth = TextSize.getTextWidth(player1, g);
+		g.drawString(
+				player1,
+				(GamePanel.WIDTH / 4) - (textWidth / 2),
+				GamePanel.HEIGHT / 6
+		);
+		
+		//Draw Player 1 Score
+		player1Score = String.valueOf(context.getPlayer1Score());
+		textWidth = TextSize.getTextWidth(player1Score, g);
+		g.drawString(
+				player1Score,
+				(GamePanel.WIDTH / 4) - (textWidth / 2),
+				((GamePanel.HEIGHT / 6) + 50)
+		);
+		
+		//Draw Player 2 Name
+		textWidth = TextSize.getTextWidth(player2, g);
+		g.drawString(
+				player2,
+				(GamePanel.WIDTH - (GamePanel.WIDTH / 4)) - (textWidth / 2),
+				GamePanel.HEIGHT / 6
+		);
+		
+		//Draw Player 2 Score
+		player2Score = String.valueOf(context.getPlayer2Score());
+		textWidth = TextSize.getTextWidth(player2Score, g);
+		g.drawString(
+				player2Score,
+				(GamePanel.WIDTH - (GamePanel.WIDTH / 4)) - (textWidth / 2),
+				((GamePanel.HEIGHT / 6) + 50)
+		);
+		
+		g.setFont(new Font ("Courier New", Font.BOLD, 24));
+		
+		//Draw Turn Score
+		textWidth = TextSize.getTextWidth("Current", g);
+		g.drawString(
+				"Current",
+				((GamePanel.WIDTH / 2) - (textWidth/ 2)),
+				((GamePanel.HEIGHT / 2) + 75)
+		);
+		textWidth = TextSize.getTextWidth(String.valueOf(context.getTurnScore()), g);
+		g.drawString(
+				String.valueOf(context.getTurnScore()),
+				((GamePanel.WIDTH / 2) - (textWidth / 2)),
+				((GamePanel.HEIGHT / 2) + 125)
+		);
 	}
-	
 	
 	/**
 	 * Method that draws text on who won
