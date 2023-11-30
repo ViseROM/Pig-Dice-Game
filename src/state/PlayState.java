@@ -111,12 +111,12 @@ public class PlayState extends State
 		//Create die1
 		die1 = new DieObject(dices);
 		die1.setX(((GamePanel.WIDTH / 2) - (die1.getWidth() / 2)) - 75);
-        die1.setY((GamePanel.HEIGHT / 2) - die1.getHeight());
+		die1.setY((GamePanel.HEIGHT / 2) - die1.getHeight());
 		
 		//Create die2
 		die2 = new DieObject(dices);
 		die2.setX(((GamePanel.WIDTH / 2) - (die1.getWidth() / 2)) + 75);
-        die2.setY((GamePanel.HEIGHT / 2) - die2.getHeight());
+		die2.setY((GamePanel.HEIGHT / 2) - die2.getHeight());
 	}
 	
 	private void createTexts()
@@ -228,11 +228,11 @@ public class PlayState extends State
 					
 			//Tell Dices to start rolling
 			die1.setRolling(true);
-		    die2.setRolling(true);
-		        	
-		    die1.setY(0 - die1.getHeight());
-		    die2.setY(0 - die2.getHeight());
-					
+			die2.setRolling(true);
+			
+			die1.setY(0 - die1.getHeight());
+			die2.setY(0 - die2.getHeight());
+			
 		}
 		else if(stopButton.isMouseClickingButton() == true) //stopButton pressed
 		{
@@ -271,48 +271,48 @@ public class PlayState extends State
 		updateButtons();
 		
 		//Rolling animation
-        if(die1.isRolling() == true && die2.isRolling() == true)
-        {
-        	//Update dices
-        	die1.update();
-        	die2.update();
-        	
-        	if(die1.isRolling() == false && die2.isRolling() == false)
-            {
-        		//Roll dices
-                context.roll();
-                
-                int die1Image = (context.getDie1Value() - 1);
-                int die2Image = (context.getDie2Value() - 1);
-                die1.changeCurrentImage(die1Image);
-                die2.changeCurrentImage(die2Image);
-                
-                //Check if a pig was rolled
-                int value = context.evaluateRoll();
-                
-                //If a pig was rolled
-                if(value == 1 || value == 2)
-                {
-                	//Go to next player
-                	context.nextPlayer();
-                }
-                
-                //Enable buttons
-                rollButton.setDisabled(false);
-                stopButton.setDisabled(false);
-            }
-        }
+		if(die1.isRolling() == true && die2.isRolling() == true)
+		{
+			//Update dices
+			die1.update();
+			die2.update();
+			
+			if(die1.isRolling() == false && die2.isRolling() == false)
+			{
+				//Roll dices
+				context.roll();
+				
+				int die1Image = (context.getDie1Value() - 1);
+				int die2Image = (context.getDie2Value() - 1);
+				die1.changeCurrentImage(die1Image);
+				die2.changeCurrentImage(die2Image);
+				
+				//Check if a pig was rolled
+				int value = context.evaluateRoll();
+				
+				//If a pig was rolled
+				if(value == 1 || value == 2)
+				{
+					//Go to next player
+					context.nextPlayer();
+				}
+				
+				//Enable buttons
+				rollButton.setDisabled(false);
+				stopButton.setDisabled(false);
+			}
+		}
         
-        //Check if game is over
-        if(gameOver == true)
-        {
-        	//Disable buttons
-        	if(rollButton.isDisabled() == false && stopButton.isDisabled() == false)
-        	{
-        		rollButton.setDisabled(true);
-            	stopButton.setDisabled(true);
-        	}
-        }
+		//Check if game is over
+		if(gameOver == true)
+		{
+			//Disable buttons
+			if(rollButton.isDisabled() == false && stopButton.isDisabled() == false)
+			{
+				rollButton.setDisabled(true);
+				stopButton.setDisabled(true);
+			}
+		}
 	}
 	
 ////////////////////////////////////////////// DRAW METHODS //////////////////////////////////////////////
@@ -327,22 +327,22 @@ public class PlayState extends State
 		if(context.getCurrentPlayer().getName().equals(context.getPlayer1().getName()))
 		{
 			g.setColor(new Color(240, 240, 240));
-	        g.fillRect(0, 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
-	        g.setColor(new Color(250, 250, 250));
-	        g.fillRect((GamePanel.WIDTH / 2), 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
-	        
-	        g.setColor(Color.RED);
-	        g.fillOval(200, 102, 16, 16);
+			g.fillRect(0, 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
+			g.setColor(new Color(250, 250, 250));
+			g.fillRect((GamePanel.WIDTH / 2), 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
+			
+			g.setColor(Color.RED);
+			g.fillOval(200, 102, 16, 16);
 		}
 		else
 		{
 			g.setColor(new Color(250, 250, 250));
-            g.fillRect(0, 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
-            g.setColor(new Color(240, 240, 240));
-            g.fillRect((GamePanel.WIDTH / 2), 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
-            
-            g.setColor(Color.RED);
-	        g.fillOval(840, 102, 16, 16);
+			g.fillRect(0, 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
+			g.setColor(new Color(240, 240, 240));
+			g.fillRect((GamePanel.WIDTH / 2), 0, (GamePanel.WIDTH / 2), GamePanel.HEIGHT);
+			
+			g.setColor(Color.RED);
+			g.fillOval(840, 102, 16, 16);
 		}
 	}
 	
@@ -352,10 +352,10 @@ public class PlayState extends State
 	 */
 	private void drawButtons(Graphics2D g)
 	{
-		 menuButton.draw(g);
-		 newGameButton.draw(g);
-	     rollButton.draw(g);
-	     stopButton.draw(g);
+		menuButton.draw(g);
+		newGameButton.draw(g);
+		rollButton.draw(g);
+		stopButton.draw(g);
 	}
 	
 	/**
@@ -365,7 +365,7 @@ public class PlayState extends State
 	private void drawDices(Graphics2D g)
 	{
 		die1.draw(g);
-        die2.draw(g);
+		die2.draw(g);
 	}
 	
 	/**
@@ -375,7 +375,7 @@ public class PlayState extends State
 	private void drawStrings(Graphics2D g)
 	{
 		int textWidth;
-        g.setColor(Color.BLACK);
+		g.setColor(Color.BLACK);
         g.setFont(new Font ("Courier New", Font.BOLD, 36));
         
         //Draw Player 1 Name and score
@@ -401,28 +401,29 @@ public class PlayState extends State
         
 	}
 	
+	
 	/**
-	 * Method that draws information about who won
-	 * @param g (Graphics2D) The Graphics2D object to be drawn on
+	 * Method that draws text on who won
+	 * @param g (Graphic2D) The Graphics2D object to be drawn on
 	 */
 	private void drawWinner(Graphics2D g)
 	{
 		if(context.getWinner() != null)
-	     {
-			 //Draw winner text
-			 g.setColor(Color.RED);
-			 g.setFont(new Font("Courier New", Font.BOLD, 36));
-			 int textLength = TextSize.getTextWidth("WINNER!", g);
-	        	
-			 if(context.getWinner().getName().equals("Player 1") == true)
-			 {
-				 g.drawString("WINNER!", (GamePanel.WIDTH / 4) - (textLength / 2), GamePanel.HEIGHT / 3);
-			 }
-			 else if(context.getWinner().getName().equals("Player 2") == true)
-			 {
-				 g.drawString("WINNER!", (GamePanel.WIDTH - (GamePanel.WIDTH / 4)) - (textLength / 2), GamePanel.HEIGHT / 3);
-			 }
-	     }
+		{
+			//Draw winner text
+			g.setColor(Color.RED);
+			g.setFont(new Font("Courier New", Font.BOLD, 36));
+			int textLength = TextSize.getTextWidth("WINNER!", g);
+			
+			if(context.getWinner().getName().equals("Player 1") == true)
+			{
+				g.drawString("WINNER!", (GamePanel.WIDTH / 4) - (textLength / 2), GamePanel.HEIGHT / 3);
+			}
+			else if(context.getWinner().getName().equals("Player 2") == true)
+			{
+				g.drawString("WINNER!", (GamePanel.WIDTH - (GamePanel.WIDTH / 4)) - (textLength / 2), GamePanel.HEIGHT / 3);
+			}
+		}
 	}
 	
 	/**
@@ -441,7 +442,7 @@ public class PlayState extends State
 	public void draw(Graphics2D g)
 	{
 		drawBackground(g);
-        drawButtons(g);
+		drawButtons(g);
         drawDices(g);
         drawStrings(g);
         
