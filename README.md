@@ -1,7 +1,7 @@
 # PigDiceGame
 Project Title: Pig Dice Game
 
-Version/Date: 1.0 - May 2023
+Version: 1.0
 
 Author: Vachia Thoj
 
