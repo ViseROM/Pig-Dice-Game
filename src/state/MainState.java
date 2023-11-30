@@ -218,7 +218,7 @@ public class MainState extends State
 	private void drawAuthorText(Graphics2D g)
 	{
 		g.setColor(Color.BLACK);
-        g.setFont(new Font("Courier New", Font.BOLD, 16));
+		g.setFont(new Font("Courier New", Font.BOLD, 16));
         g.drawString(authorText, 5, GamePanel.HEIGHT - 5);
 	}
 	
@@ -229,9 +229,9 @@ public class MainState extends State
 	private void drawVersionText(Graphics2D g)
 	{
 		g.setColor(Color.BLACK);
-        g.setFont(new Font("Courier New", Font.BOLD, 16));
-        int versionWidth = (int) g.getFontMetrics().getStringBounds(versionText, g).getWidth();
-        g.drawString(versionText, GamePanel.WIDTH - versionWidth, GamePanel.HEIGHT - 5);
+		g.setFont(new Font("Courier New", Font.BOLD, 16));
+		int versionWidth = (int) g.getFontMetrics().getStringBounds(versionText, g).getWidth();
+		g.drawString(versionText, GamePanel.WIDTH - versionWidth, GamePanel.HEIGHT - 5);
 	}
 	
 	/**
