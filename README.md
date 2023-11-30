@@ -18,6 +18,8 @@ Author: Vachia Thoj
 
 #### Source code is divided into the following packages:
 - backend
+- button
+- context
 - entity
 - helper
 - main
